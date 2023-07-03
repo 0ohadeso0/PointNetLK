@@ -6,7 +6,7 @@ import six
 import numpy as np
 import torch
 import torch.utils.data
-
+import pickle as pkl
 
 def find_classes(root):
     """ find ${root}/${class}/* """
@@ -49,7 +49,7 @@ def glob_dataset(root, class_to_idx, ptns):
 class Globset(torch.utils.data.Dataset):
     """ glob ${rootdir}/${classes}/${pattern}
     """
-    def __init__(self, rootdir, pattern, fileloader, transform=None, classinfo=None):
+    def __init__(self, rootdir, pattern, fileloader, transform=None, classinfo=None, sample_file=None,use_cache=True):
         super().__init__()
 
         if isinstance(pattern, six.string_types):
@@ -59,19 +59,28 @@ class Globset(torch.utils.data.Dataset):
             classes, class_to_idx = classinfo
         else:
             classes, class_to_idx = find_classes(rootdir)
+        self.use_cache = use_cache
+        if not use_cache:
+            samples = glob_dataset(rootdir, class_to_idx, pattern)
+            if not samples:
+                raise RuntimeError("Empty: rootdir={}, pattern(s)={}".format(rootdir, pattern))
 
-        samples = glob_dataset(rootdir, class_to_idx, pattern)
-        if not samples:
-            raise RuntimeError("Empty: rootdir={}, pattern(s)={}".format(rootdir, pattern))
+            self.rootdir = rootdir
+            self.pattern = pattern
+            self.fileloader = fileloader
+            self.transform = transform
 
-        self.rootdir = rootdir
-        self.pattern = pattern
-        self.fileloader = fileloader
-        self.transform = transform
+            self.classes = classes
+            self.class_to_idx = class_to_idx
+            self.samples = samples
+        else:
+            self.transform = transform
+            self.classes = classes
+            self.class_to_idx = class_to_idx
+            self.samples = pkl.load(open(rootdir+"/"+sample_file,"rb"))
 
-        self.classes = classes
-        self.class_to_idx = class_to_idx
-        self.samples = samples
+
+        
 
     def __repr__(self):
         fmt_str = 'Dataset {}\n'.format(self.__class__.__name__)
@@ -88,12 +97,14 @@ class Globset(torch.utils.data.Dataset):
         return len(self.samples)
 
     def __getitem__(self, index):
-        path, target = self.samples[index]
-        sample = self.fileloader(path)
+        if self.use_cache:
+            sample,target = self.samples[index]
+        else:
+            path, target = self.samples[index]
+            sample = self.fileloader(path)     
         if self.transform is not None:
             sample = self.transform(sample)
-
-        return sample, target
+        return sample, target[0]
 
     def num_classes(self):
         return len(self.classes)

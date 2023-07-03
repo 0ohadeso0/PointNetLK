@@ -289,13 +289,11 @@ def get_datasets(args):
 
     if args.dataset_type == 'modelnet':
         transform = torchvision.transforms.Compose([\
-                ptlk.data.transforms.Mesh2Points(),\
-                ptlk.data.transforms.OnUnitCube(),\
                 ptlk.data.transforms.Resampler(args.num_points),\
             ])
 
-        traindata = ptlk.data.datasets.ModelNet(args.dataset_path, train=1, transform=transform, classinfo=cinfo)
-        testdata = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo)
+        traindata = ptlk.data.datasets.ModelNet(args.dataset_path, train=1, transform=transform, classinfo=cinfo,sample_name=args.categoryfile.strip().split("/")[-1][:-4])
+        testdata = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo,sample_name=args.categoryfile.strip().split("/")[-1][:-4])
 
         mag_randomly = True
         trainset = ptlk.data.datasets.CADset4tracking(traindata,\

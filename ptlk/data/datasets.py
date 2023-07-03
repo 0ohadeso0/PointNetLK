@@ -12,15 +12,17 @@ from .. import se3
 
 class ModelNet(globset.Globset):
     """ [Princeton ModelNet](http://modelnet.cs.princeton.edu/) """
-    def __init__(self, dataset_path, train=1, transform=None, classinfo=None):
+    def __init__(self, dataset_path, train=1, transform=None, classinfo=None,sample_name=None):
         loader = mesh.offread
         if train > 0:
             pattern = 'train/*.off'
+            sample_file = sample_name + "_train.pkl"
         elif train == 0:
             pattern = 'test/*.off'
+            sample_file = sample_name + "_test.pkl"
         else:
             pattern = ['train/*.off', 'test/*.off']
-        super().__init__(dataset_path, pattern, loader, transform, classinfo)
+        super().__init__(dataset_path, pattern, loader, transform, classinfo,sample_file)
 
 class ShapeNet2(globset.Globset):
     """ [ShapeNet](https://www.shapenet.org/) v2 """

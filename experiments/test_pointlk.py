@@ -60,8 +60,8 @@ def options(argv=None):
                         metavar='LOGNAME', help='path to logfile (default: null (no logging))')
     parser.add_argument('-j', '--workers', default=4, type=int,
                         metavar='N', help='number of data loading workers (default: 4)')
-    parser.add_argument('--device', default='cpu', type=str,
-                        metavar='DEVICE', help='use CUDA if available (default: cpu)')
+    parser.add_argument('--device', default='cuda:0', type=str,
+                        metavar='DEVICE', help='use CUDA if available (default: cuda:0)')
 
     args = parser.parse_args(argv)
     return args
@@ -201,7 +201,7 @@ def get_datasets(args):
                 ptlk.data.transforms.OnUnitCube(),\
             ])
 
-        testdata = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo)
+        testdata = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=None, classinfo=cinfo,sample_name=args.categoryfile.strip().split("/")[-1][:-4])
 
         testset = ptlk.data.datasets.CADset4tracking_fixed_perturbation(testdata,\
                         perturbations, fmt_trans=fmt_trans)

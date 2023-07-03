@@ -14,7 +14,7 @@ import numpy
 import torch
 import torch.utils.data
 import torchvision
-
+import time
 # addpath('../')
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
 import ptlk
@@ -172,6 +172,7 @@ class Action:
         vloss = 0.0
         pred  = 0.0
         count = 0
+        s = time.time()
         for i, data in enumerate(trainloader):
             target, output, loss = self.compute_loss(model, data, device)
             # forward + backward + optimize
@@ -187,6 +188,8 @@ class Action:
             ag = (pred1 == target)
             am = ag.sum()
             pred += am.item()
+
+            s = time.time()
 
         running_loss = float(vloss)/count
         accuracy = float(pred)/count
@@ -244,15 +247,13 @@ def get_datasets(args):
 
     if args.dataset_type == 'modelnet':
         transform = torchvision.transforms.Compose([\
-                ptlk.data.transforms.Mesh2Points(),\
-                ptlk.data.transforms.OnUnitCube(),\
                 ptlk.data.transforms.Resampler(args.num_points),\
                 ptlk.data.transforms.RandomRotatorZ(),\
                 ptlk.data.transforms.RandomJitter()\
             ])
 
-        trainset = ptlk.data.datasets.ModelNet(args.dataset_path, train=1, transform=transform, classinfo=cinfo)
-        testset = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo)
+        trainset = ptlk.data.datasets.ModelNet(args.dataset_path, train=1, transform=transform, classinfo=cinfo,sample_name=args.categoryfile.strip().split("/")[-1][:-4])
+        testset = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo,sample_name=args.categoryfile.strip().split("/")[-1][:-4])
 
     elif args.dataset_type == 'shapenet2':
         transform = torchvision.transforms.Compose([\

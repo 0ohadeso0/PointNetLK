@@ -82,7 +82,7 @@ def get_datasets(args):
                 ptlk.data.transforms.OnUnitCube(),\
             ])
 
-        testdata = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo)
+        testdata = ptlk.data.datasets.ModelNet(args.dataset_path, train=0, transform=transform, classinfo=cinfo,sample_name=args.categoryfile.strip().split("/")[-1][:-4])
 
     return testdata
 
