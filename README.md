@@ -30,8 +30,8 @@ Yasuhiro Aoki
 * 下载[ModelNet40](http://modelnet.cs.princeton.edu/ModelNet40.zip)
 * 预处理数据集，加快训练速度
   * cd experiment
-  * python generate_cache_data.py -i path/to/modelnet40 -c ./sampledata/modelnet40_half1.txt #all cat
-  * python generate_cache_data.py -i path/to/modelnet40 -c ./sampledata/modelnet40_car.txt # for car
+  * python generate_cache_data.py -i ./data/ModelNet40 -c ./sampledata/modelnet40_half1.txt #all cat
+  * python generate_cache_data.py -i ./data/ModelNet40 -c ./sampledata/modelnet40_car.txt # for car
 * bash ex1_train.txt or ex1_train_train_car.sh
 * bash ex1_genrot.sh or ex1_genrot_car.sh
 * bash ex1test_pointlk.sh or ex1_test_pointlk_car.sh
