@@ -9,7 +9,7 @@ PY3="python"
 
 # categories for testing and the trained model
 MODEL=${HOME}/results_car/ex1_pointlk_0915_model_best.pth
-CMN="-i /home/lijianhao/dataset/ModelNet40 -c ./sampledata/modelnet40_car.txt --format wt --pretrained ${MODEL}"
+CMN="-i ./data/ModelNet40 -c ./sampledata/modelnet40_car.txt --format wt --pretrained ${MODEL}"
 
 # perturbations
 PERDIR=${HOME}/results_car/ex1/gt

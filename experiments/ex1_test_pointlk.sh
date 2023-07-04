@@ -9,7 +9,7 @@ PY3="nice -n 10 python"
 
 # categories for testing and the trained model
 MODEL=${HOME}/results/ex1_pointlk_0915_model_best.pth
-CMN="-i /home/yasuhiro/work/pointnet/ModelNet40 -c ./sampledata/modelnet40_half1.txt --format wt --pretrained ${MODEL}"
+CMN="-i ./data/ModelNet40 -c ./sampledata/modelnet40_half1.txt --format wt --pretrained ${MODEL}"
 
 # perturbations
 PERDIR=${HOME}/results/ex1/gt
